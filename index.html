@@ -27,17 +27,16 @@
     overflow:hidden;
 
     background:
-        radial-gradient(circle at 50% 40%, rgba(0,200,255,0.25), transparent 55%),
-        url("space.png"),
-        url("neural-bg.png"),
-        linear-gradient(#020617,#020617);
+        linear-gradient(rgba(2,6,23,0.85),
+      rgba(2,6,23,.85)),        
+        url("neutral-bg".png"),
+        url("spacelbg.png"),
+        
 
     background-size:
-        120% 120%,
-        cover,
-        cover,
-        cover;
-
+      cover,
+      110%110%,
+cover;
     background-position:
         center,
         center,
@@ -45,7 +44,15 @@
         center;
 
     background-repeat:no-repeat;
-}
+}body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:url("neural-bg.png") center/cover no-repeat;
+    opacity:.55;
+    mix-blend-mode:screen;
+    pointer-events:none;
+  }
   }
 
   /* --- DYNAMIC BACKGROUND SYSTEM --- */
