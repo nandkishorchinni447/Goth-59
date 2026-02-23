@@ -16,12 +16,36 @@
 
   * { box-sizing: border-box; }
 
-  body { 
-    margin:0; font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-    background: var(--bg);
-    color: white; display: flex; justify-content: center; align-items: center; 
-    min-height: 100vh; overflow: hidden;
-    perspective: 1200px;
+  body{
+    margin:0;
+    font-family:Inter,system-ui;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100dvh;
+    overflow:hidden;
+
+    background:
+        radial-gradient(circle at 50% 40%, rgba(0,200,255,0.25), transparent 55%),
+        url("space.png"),
+        url("neural-bg.png"),
+        linear-gradient(#020617,#020617);
+
+    background-size:
+        120% 120%,
+        cover,
+        cover,
+        cover;
+
+    background-position:
+        center,
+        center,
+        center,
+        center;
+
+    background-repeat:no-repeat;
+}
   }
 
   /* --- DYNAMIC BACKGROUND SYSTEM --- */
@@ -124,7 +148,15 @@
     0% { transform: translate(2px, 2px); }
     50% { transform: translate(-2px, -2px); filter: hue-rotate(90deg); }
     100% { transform: translate(0); }
-  }
+  }@keyframes spaceMove {
+    0%   { background-position: center, 0% 0%, center, center; }
+    50%  { background-position: center, 15% 10%, center, center; }
+    100% { background-position: center, 0% 0%, center, center; }
+}
+
+body{
+    animation: spaceMove 60s linear infinite;
+}
   
   .hidden { display: none !important; }
 </style>
