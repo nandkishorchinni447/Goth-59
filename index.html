@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brain Reactor Ultra - Quantum Edition</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #020617;
+    --card: rgba(15, 23, 42, 0.6);
+    --accent: #38bdf8;
+    --success: #22c55e;
+    --error: #f43f5e;
+    --gold: #fbbf24;
+  }
+
+  * { box-sizing: border-box; }
+
+  body { 
+    margin:0; font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+    background: var(--bg);
+    color: white; display: flex; justify-content: center; align-items: center; 
+    min-height: 100vh; overflow: hidden;
+    perspective: 1200px;
+  }
+
+  /* --- DYNAMIC BACKGROUND SYSTEM --- */
+  
+  .bg-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* Try local file first, then use a fallback URL if it's missing */
+    background: url('1771742508963.jpeg'), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    animation: glow-pulse 8s infinite alternate ease-in-out;
+  }
+
+  @keyframes glow-pulse {
+    0% { filter: brightness(0.8) contrast(1.1) saturate(1); transform: scale(1); }
+    100% { filter: brightness(1.4) contrast(1.3) saturate(1.4); transform: scale(1.05); }
+  }
+
+  .grid-layer {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+      linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: radial-gradient(circle, black, transparent 80%);
+  }
+
+  .scanline {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.1) 50%, transparent);
+    z-index: 1;
+    pointer-events: none;
+    animation: scan 4s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* --- UI GLASSMORPHISM --- */
+
+  .container { 
+    width: 90%; max-width: 420px; text-align: center; 
+    background: var(--card); padding: 3rem 2rem; 
+    border-radius: 40px; 
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 0 20px rgba(56, 189, 248, 0.2);
+    transition: transform 0.15s ease-out;
+  }
+
+  .logo-box {
+    width: 90px; height: 90px; margin: 0 auto 25px;
+    background: rgba(56, 189, 248, 0.2); border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 45px; border: 2px solid var(--accent);
+    box-shadow: 0 0 40px rgba(56, 189, 248, 0.4);
+    animation: float 3s infinite ease-in-out;
+  }
+
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  h1 { 
+    font-size: 2.4rem; margin: 0; font-weight: 900; letter-spacing: 2px;
+    background: linear-gradient(135deg, #fff, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  
+  .btn-group { display: flex; flex-direction: column; gap: 15px; margin-top: 35px; }
+  
+  button { 
+    padding: 20px; font-size: 15px; font-weight: 800; border: none; border-radius: 20px; 
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    background: var(--accent); color: var(--bg);
+    text-transform: uppercase; letter-spacing: 2px;
+  }
+
+  button:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(56, 189, 248, 0.4); }
+
+  .option-btn { 
+    background: rgba(255,255,255,0.03); color: white; border: 1px solid rgba(255,255,255,0.1);
+    font-size: 22px; padding: 25px;
+  }
+  .option-btn:hover { background: var(--accent); color: var(--bg); }
+
+  .progress-bar { height: 10px; background: rgba(255,255,255,0.05); border-radius: 20px; margin: 25px 0; overflow: hidden; }
+  .fill { height: 100%; width: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); transition: width 0.05s linear; }
+  
+  .task { font-size: 48px; font-weight: 900; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  
+  .glitch { animation: glitch 0.2s infinite; border-color: var(--error) !important; }
+  @keyframes glitch {
+    0% { transform: translate(2px, 2px); }
+    50% { transform: translate(-2px, -2px); filter: hue-rotate(90deg); }
+    100% { transform: translate(0); }
+  }
+  
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="bg-overlay"></div>
+<div class="grid-layer"></div>
+<div class="scanline"></div>
+
+<div class="container" id="homeScreen">
+  <div class="logo-box">🧠</div>
+  <h1>BRAIN REACTOR</h1>
+  <p style="color: var(--accent); font-size: 11px; margin-top: 10px; letter-spacing: 4px; opacity: 0.8;">NEURAL INTERFACE V.4.0</p>
+  <div class="btn-group">
+    <button onclick="initGame('solo')">SOLO BLITZ</button>
+    <button onclick="initGame('friend')" style="background:transparent; color:var(--accent); border:2px solid var(--accent);">LINK PLAYER 2</button>
+  </div>
+</div>
+
+<div class="container hidden" id="gameScreen">
+  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; letter-spacing: 2px;">
+    <span id="playerLabel" style="color:var(--accent)">NODE_01</span>
+    <span id="scoreDisplay">DATA_XP: 0</span>
+  </div>
+  <div class="progress-bar"><div class="fill" id="timerBar"></div></div>
+  <div class="task" id="taskDisplay"></div>
+  <div class="options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;" id="optionsBox">
+    <button class="option-btn" id="opt0"></button>
+    <button class="option-btn" id="opt1"></button>
+    <button class="option-btn" id="opt2"></button>
+    <button class="option-btn" id="opt3"></button>
+  </div>
+</div>
+
+<div class="container hidden" id="passScreen">
+  <h1 style="color: var(--accent);">SYNCING...</h1>
+  <p style="margin: 30px 0; color: #94a3b8; letter-spacing: 1px;">NEURAL HANDOFF REQUIRED <br><br><b style="color:white; font-size: 22px;">PLAYER 2 READY?</b></p>
+  <button onclick="startTurn()" style="width: 100%;">INITIALIZE SESSION</button>
+</div>
+
+<div class="container hidden" id="resultScreen">
+  <h1 id="resTitle">ANALYSIS READY</h1>
+  <div id="resStats" style="margin: 30px 0; font-size: 18px;"></div>
+  <button onclick="location.reload()" style="width: 100%; background: white; color: black;">SYSTEM REBOOT</button>
+</div>
+
+<script>
+// --- CORE LOGIC ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSfx(f, t, d) {
+  try {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = t; o.frequency.value = f; g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d);
+    o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d);
+  } catch(e) {}
+}
+
+let game = { mode:'solo', activePlayer:0, scores:[0,0], round:0, maxRounds:10, timer:null, currentA:null, streak:0 };
+
+// 3D Tilt Interaction
+document.addEventListener('mousemove', (e) => {
+  const container = document.querySelector('.container:not(.hidden)');
+  if (!container) return;
+  const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+  const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+  container.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+});
+
+function initGame(m) {
+  game.mode = m; game.activePlayer = 0; game.scores = [0,0];
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  document.getElementById('homeScreen').classList.add('hidden');
+  startTurn();
+}
+
+function startTurn() {
+  game.round = 0; game.streak = 0;
+  document.getElementById('passScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+  document.getElementById('playerLabel').innerText = `NODE: 0${game.activePlayer+1}`;
+  nextTask();
+}
+
+function nextTask() {
+  if (game.mode === 'friend' && game.round >= game.maxRounds) {
+    if (game.activePlayer === 0) {
+      game.activePlayer = 1;
+      document.getElementById('gameScreen').classList.add('hidden');
+      document.getElementById('passScreen').classList.remove('hidden');
+    } else { showResults(); }
+    return;
+  }
+
+  const types = ['math', 'stroop', 'arrows'];
+  const type = types[Math.floor(Math.random() * types.length)];
+  let task = {};
+
+  if (type === 'math') {
+    const a = Math.floor(Math.random()*11)+3, b = Math.floor(Math.random()*11)+3;
+    task = { q:`${a} × ${b}`, a:a*b, opts:[a*b, a*b+2, a*b-4, a*b+10].sort(()=>Math.random()-.5)};
+  } else if (type === 'stroop') {
+    const colors = ['RED','BLUE','GREEN','YELLOW'];
+    const t = colors[Math.floor(Math.random()*4)], c = colors[Math.floor(Math.random()*4)];
+    task = { q:`<span style="color:${c.toLowerCase()}">${t}</span><small style="display:block; font-size:10px; opacity:0.5; margin-top:15px;">READ COLOR</small>`, a:c, opts:[...colors].sort(()=>Math.random()-.5)};
+  } else {
+    const arrows = ['⬆️','⬇️','⬅️','➡️'];
+    const target = arrows[Math.floor(Math.random()*4)];
+    task = { q:target, a:target, opts:[...arrows].sort(()=>Math.random()-.5)};
+  }
+
+  game.currentA = task.a;
+  document.getElementById('taskDisplay').innerHTML = task.q;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.toggle('hidden', !task.opts[i]);
+    if (task.opts[i]) { btn.innerText = task.opts[i]; btn.onclick = () => check(task.opts[i]); }
+  });
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(game.timer);
+  const start = Date.now();
+  const limit = game.mode === 'solo' ? 1700 : 2200;
+  game.timer = setInterval(() => {
+    const p = 1 - (Date.now() - start) / limit;
+    const bar = document.getElementById('timerBar');
+    bar.style.width = (p * 100) + '%';
+    bar.style.background = p < 0.3 ? 'var(--error)' : 'var(--accent)';
+    if (p <= 0) check(null);
+  }, 16);
+}
+
+function check(val) {
+  clearInterval(game.timer);
+  const screen = document.getElementById('gameScreen');
+  if (val === game.currentA) {
+    playSfx(880, 'sine', 0.1);
+    game.streak++;
+    let mult = game.streak >= 5 ? 2 : (game.streak >= 3 ? 1.5 : 1);
+    game.scores[game.activePlayer] += Math.floor(10 * mult);
+    document.getElementById('scoreDisplay').innerText = `DATA_XP: ${game.scores[game.activePlayer]}`;
+    game.round++; nextTask();
+  } else {
+    playSfx(100, 'sawtooth', 0.3);
+    screen.classList.add('glitch');
+    setTimeout(() => {
+      screen.classList.remove('glitch');
+      if (game.mode === 'solo') showResults(); else { game.round++; nextTask(); }
+    }, 400);
+  }
+}
+
+function showResults() {
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('resultScreen').classList.remove('hidden');
+  const res = document.getElementById('resStats');
+  if (game.mode === 'solo') {
+    res.innerHTML = `FINAL DATA SCORE: <b style="font-size:32px; color:var(--accent);">${game.scores[0]}</b>`;
+  } else {
+    const p1 = game.scores[0], p2 = game.scores[1];
+    res.innerHTML = `NODE 1: ${p1} | NODE 2: ${p2}<br><br><b style="color:var(--accent);">${p1 > p2 ? 'NODE 01 DOMINANT' : p2 > p1 ? 'NODE 02 DOMINANT' : 'SYNC STABLE'}</b>`;
+  }
+}
+</script>
+</body>
+</html>
+
